@@ -33,98 +33,57 @@ Kong Gateway  ←─ single public entry point (CORS, rate limiting)
 
 ## Services
 
-| Service                                                                    | Language    | Port         | Description                                          |
-|----------------------------------------------------------------------------|-------------|--------------|------------------------------------------------------|
-| [authentication-service](authentication-service/README.md)                 | Java        | 8081         | Azure AD token exchange → platform JWT              |
-| [chat-service](chat-service/README.md)                                     | Java        | 8082         | WebSocket chat + session management                  |
-| [chatbot-service](chatbot-service/README.md)                               | Python      | 8000 / 50051 | RAG pipeline (FastAPI + gRPC server)                |
-| [document-service](document-service/README.md)                             | Java        | 8083         | SharePoint document retrieval                        |
-| [etl-service](etl-service/README.md)                                       | Python      | —            | SharePoint → ChromaDB ingestion pipeline             |
-| [evaluation-service](evaluation-service/README.md)                         | Java        | 8084         | AI response quality evaluation (planned)             |
-| [kong-gateway](kong-gateway/README.md)                                     | Kong        | 8000         | API gateway — public entry point                     |
-| [ollama-service](ollama-service/README.md)                                 | Shell/Docker| 11434        | Self-hosted Ollama LLM server                        |
-| [shared-security](shared-security/README.md)                               | Java (lib)  | —            | Shared JWT validation library for Java services      |
-| [user-interface](user-interface/README.md)                                 | Vue 3 / TS  | 5173         | Frontend chat application                            |
+| Service | Language | Port | Docs |
+|---|---|---|---|
+| [authentication-service](authentication-service) | Java 21 | 8081 | [docs/services/authentication-service.md](docs/services/authentication-service.md) |
+| [chat-service](chat-service) | Java 21 | 8082 | [docs/services/chat-service.md](docs/services/chat-service.md) |
+| [chatbot-service](chatbot-service) | Python | 8000 / 50051 | [docs/services/chatbot-service.md](docs/services/chatbot-service.md) |
+| [document-service](document-service) | Java 21 | 8083 | [docs/services/document-service.md](docs/services/document-service.md) |
+| [etl-service](etl-service) | Python | — | [docs/services/etl-service.md](docs/services/etl-service.md) |
+| [evaluation-service](evaluation-service) | Java 17 | 8084 | [docs/services/evaluation-service.md](docs/services/evaluation-service.md) |
+| [kong-gateway](kong-gateway) | Kong 3.7 | 8000 | [docs/services/kong-gateway.md](docs/services/kong-gateway.md) |
+| [ollama-service](ollama-service) | Shell/Docker | 11434 | [docs/services/ollama-service.md](docs/services/ollama-service.md) |
+| [shared-security](shared-security) | Java (lib) | — | [docs/services/shared-security.md](docs/services/shared-security.md) |
+| [user-interface](user-interface) | Vue 3 / TS | 3000 | [docs/services/user-interface.md](docs/services/user-interface.md) |
 
 ## Service Documentation
 
-Detailed documentation for each service:
-
-- [Authentication Service](authentication-service/README.md) — Azure AD → platform JWT token exchange, refresh token rotation, PostgreSQL schema
-- [Chat Service](chat-service/README.md) — WebSocket/STOMP chat, session management, gRPC integration with chatbot-service
-- [Chatbot Service](chatbot-service/README.md) — RAG pipeline, hybrid retrieval (BM25 + BGE-M3), Ollama/HuggingFace/Azure Foundry LLM support
-- [Document Service](document-service/README.md) — SharePoint file retrieval via Microsoft Graph API, failed ETL document reporting
-- [ETL Service](etl-service/README.md) — SharePoint → ChromaDB ingestion, version filtering, domain tagging
-- [Evaluation Service](evaluation-service/README.md) — AI response quality evaluation (faithfulness, retrieval accuracy)
-- [Kong Gateway](kong-gateway/README.md) — DB-less API gateway, CORS, rate limiting, route map
-- [Ollama Service](ollama-service/README.md) — Self-hosted LLM server, model configuration, GPU support
-- [Shared Security](shared-security/README.md) — Shared JWT validation and request logging library for Java services
-- [User Interface](user-interface/README.md) — Vue 3 frontend, MSAL SSO, STOMP chat, session management
+- [Authentication Service](docs/services/authentication-service.md) — Azure AD → platform JWT token exchange, refresh token rotation, PostgreSQL schema
+- [Chat Service](docs/services/chat-service.md) — WebSocket/STOMP chat, session management, gRPC integration with chatbot-service
+- [Chatbot Service](docs/services/chatbot-service.md) — RAG pipeline, hybrid retrieval (BM25 + BGE-M3), Ollama/HuggingFace/Azure Foundry LLM support
+- [Document Service](docs/services/document-service.md) — SharePoint file retrieval via Microsoft Graph API, failed ETL document reporting
+- [ETL Service](docs/services/etl-service.md) — SharePoint → ChromaDB ingestion, version filtering, domain tagging
+- [Evaluation Service](docs/services/evaluation-service.md) — AI response quality evaluation (faithfulness, retrieval accuracy)
+- [Kong Gateway](docs/services/kong-gateway.md) — DB-less API gateway, CORS, rate limiting, route map
+- [Ollama Service](docs/services/ollama-service.md) — Self-hosted LLM server, model configuration, GPU support
+- [Shared Security](docs/services/shared-security.md) — Shared JWT validation and request logging library for Java services
+- [User Interface](docs/services/user-interface.md) — Vue 3 frontend, MSAL SSO, STOMP chat, session management
 
 ## Quick Start (Local Development)
 
-### Prerequisites
-- Java 21, Gradle
-- Python 3.11+
-- Node.js 20+
-- Docker (for ChromaDB and Ollama, or use Azure instances)
-- PostgreSQL 15
+See **[LOCAL_SETUP.md](LOCAL_SETUP.md)** for the full Docker Compose setup guide.
 
-### 1. Start the database
 ```bash
-docker run -d --name postgres -e POSTGRES_PASSWORD=password123 \
-  -e POSTGRES_DB=oconnor -p 5432:5432 postgres:15
+cp .env.example .env          # fill in Azure credentials
+docker compose build           # build all images
+docker compose up -d           # start the full stack
 ```
 
-### 2. Start Ollama (local LLM)
-```bash
-docker run -d --name ollama -p 11434:11434 ollama/ollama
-docker exec ollama ollama pull llama3.2:3b
-```
+Frontend: http://localhost:3000  
+API gateway: http://localhost:8000
 
-### 3. Start Java backend services
+To ingest documents into ChromaDB:
 ```bash
-cd authentication-service && ./gradlew bootRun &
-cd chat-service && ./gradlew bootRun &
-cd document-service && ./gradlew bootRun &
-```
-
-### 4. Start Python chatbot service
-```bash
-cd chatbot-service
-cp .env.example .env   # edit with credentials
-pip install -r requirements.txt
-python server.py       # gRPC on :50051
-uvicorn app:app --port 8000   # HTTP on :8000
-```
-
-### 5. Start the frontend
-```bash
-cd user-interface
-npm install
-cp .env.example .env.local   # edit with credentials
-npm run dev                   # http://localhost:5173
-```
-
-## ETL — Ingesting Documents
-
-To load O'Connors IMS documents into ChromaDB:
-```bash
-cd etl-service
-pip install -r requirements.txt
-cp .env.example .env   # set SharePoint credentials + ChromaDB host
-python src/main.py
+docker compose --profile etl up etl-service
 ```
 
 ## Production Deployment
 
-All services are deployed as Azure Container Apps. The Kong gateway is the only publicly exposed endpoint. See each service's README for its deployment manifest.
+All services are deployed as Azure Container Apps. The Kong gateway is the only publicly exposed endpoint.
 
 ## Design Documents
 
-All documents and diagrams are collected in the [docs/](docs/) folder.
-
 - [DESIGN_DOCUMENT.md](docs/DESIGN_DOCUMENT.md) — detailed architecture and technical decisions
 - [CONCEPT_DESIGN_REPORT.md](docs/CONCEPT_DESIGN_REPORT.md) — project concept and requirements
-- [docs/diagrams/](docs/diagrams/) — architecture diagrams (`.drawio`, `.png`, ETL pipeline)
+- [docs/diagrams/](docs/diagrams/) — architecture diagrams (`.drawio`, `.jpeg`)
 - [docs/services/](docs/services/) — per-service documentation
