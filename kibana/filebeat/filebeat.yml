@@ -1,0 +1,27 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/app/*.log
+    fields:
+      app_service: ${APP_SERVICE:unknown-service}
+      environment: prod
+    fields_under_root: true
+    multiline:
+      pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}'
+      negate: true
+      match: after
+
+output.elasticsearch:
+  hosts: ["${ELASTICSEARCH_HOST}"]
+  username: "${ELASTICSEARCH_USERNAME}"
+  password: "${ELASTICSEARCH_PASSWORD}"
+  index: "${INDEX_NAME:app-service}-%{+yyyy.MM.dd}"
+  ssl.verification_mode: none
+
+setup.ilm.enabled: false
+setup.template.enabled: true
+setup.template.name: "${INDEX_NAME:app-service}"
+setup.template.pattern: "${INDEX_NAME:app-service}-*"
+
+logging.level: info

@@ -1,0 +1,34 @@
+location: australiaeast
+resourceGroup: ai-platform
+type: Microsoft.App/containerApps
+name: kibana
+properties:
+  environmentId: /subscriptions/53f34d3b-bdc7-4e68-89c4-0e4f1947eb31/resourceGroups/ai-platform/providers/Microsoft.App/managedEnvironments/managedEnvironment-aiplatform-8573
+  configuration:
+    ingress:
+      external: true
+      targetPort: 5601
+      transport: http
+      allowInsecure: false
+  template:
+    containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:8.13.0
+        resources:
+          cpu: 1.0
+          memory: 2.0Gi
+        env:
+          # Uses short DNS name — Elasticsearch must be in the same managed environment
+          # with internal ingress. If DNS resolution fails, replace with the full FQDN:
+          #   http://elasticsearch.<env-suffix>.internal.azurecontainerapps.io:9200
+          - name: ELASTICSEARCH_HOSTS
+            value: "http://elasticsearch:9200"
+          - name: SERVER_NAME
+            value: "kibana"
+          - name: XPACK_SECURITY_ENABLED
+            value: "false"
+          - name: TELEMETRY_ENABLED
+            value: "false"
+    scale:
+      minReplicas: 1
+      maxReplicas: 1

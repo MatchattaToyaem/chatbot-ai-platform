@@ -1,0 +1,52 @@
+location: australiaeast
+resourceGroup: ai-platform
+type: Microsoft.App/containerApps
+name: ollama-service
+identity:
+  type: None
+properties:
+  environmentId: /subscriptions/53f34d3b-bdc7-4e68-89c4-0e4f1947eb31/resourceGroups/ai-platform/providers/Microsoft.App/managedEnvironments/managedEnvironment-aiplatform-8573
+  configuration:
+    registries:
+      - server: oconnoraiplatform.azurecr.io
+        username: oconnoraiplatform
+        passwordSecretRef: acr-password
+    secrets:
+      - name: acr-password
+        value: PLACEHOLDER_ACR
+    ingress:
+      external: false
+      targetPort: 11434
+      transport: http
+      allowInsecure: true
+  template:
+    containers:
+      - name: ollama-service
+        image: oconnoraiplatform.azurecr.io/ollama-service:latest
+        resources:
+          cpu: 4.0
+          memory: 8Gi
+        env:
+          - name: LLM_MODEL
+            value: "llama3.2:3b"
+        probes:
+          - type: startup
+            tcpSocket:
+              port: 11434
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 120
+          - type: readiness
+            tcpSocket:
+              port: 11434
+            periodSeconds: 10
+            failureThreshold: 3
+          - type: liveness
+            tcpSocket:
+              port: 11434
+            periodSeconds: 30
+            failureThreshold: 3
+
+    scale:
+      minReplicas: 1
+      maxReplicas: 1

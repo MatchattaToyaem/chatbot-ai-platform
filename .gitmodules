@@ -1,0 +1,24 @@
+[submodule "authentication-service"]
+	path = authentication-service
+	url = git@bitbucket.org:oconnors-ai-platform/authentication-service.git
+[submodule "chat-service"]
+	path = chat-service
+	url = git@bitbucket.org:oconnors-ai-platform/chat-service.git
+[submodule "chatbot-service"]
+	path = chatbot-service
+	url = git@bitbucket.org:oconnors-ai-platform/chatbot-service.git
+[submodule "document-service"]
+	path = document-service
+	url = git@bitbucket.org:oconnors-ai-platform/document-service.git
+[submodule "etl-service"]
+	path = etl-service
+	url = git@bitbucket.org:oconnors-ai-platform/etl-framework.git
+[submodule "kong-gateway"]
+	path = kong-gateway
+	url = git@bitbucket.org:oconnors-ai-platform/kong-gateway.git
+[submodule "shared-security"]
+	path = shared-security
+	url = git@bitbucket.org:oconnors-ai-platform/shared-security.git
+[submodule "user-interface"]
+	path = user-interface
+	url = git@bitbucket.org:oconnors-ai-platform/user-interface.git
