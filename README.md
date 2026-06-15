@@ -35,16 +35,16 @@ Kong Gateway  ←─ single public entry point (CORS, rate limiting)
 
 | Service | Language | Port | Docs |
 |---|---|---|---|
-| [authentication-service](authentication-service) | Java 21 | 8081 | [docs/services/authentication-service.md](docs/services/authentication-service.md) |
-| [chat-service](chat-service) | Java 21 | 8082 | [docs/services/chat-service.md](docs/services/chat-service.md) |
-| [chatbot-service](chatbot-service) | Python | 8000 / 50051 | [docs/services/chatbot-service.md](docs/services/chatbot-service.md) |
-| [document-service](document-service) | Java 21 | 8083 | [docs/services/document-service.md](docs/services/document-service.md) |
-| [etl-service](etl-service) | Python | — | [docs/services/etl-service.md](docs/services/etl-service.md) |
-| [evaluation-service](evaluation-service) | Java 17 | 8084 | [docs/services/evaluation-service.md](docs/services/evaluation-service.md) |
-| [kong-gateway](kong-gateway) | Kong 3.7 | 8000 | [docs/services/kong-gateway.md](docs/services/kong-gateway.md) |
-| [ollama-service](ollama-service) | Shell/Docker | 11434 | [docs/services/ollama-service.md](docs/services/ollama-service.md) |
-| [shared-security](shared-security) | Java (lib) | — | [docs/services/shared-security.md](docs/services/shared-security.md) |
-| [user-interface](user-interface) | Vue 3 / TS | 3000 | [docs/services/user-interface.md](docs/services/user-interface.md) |
+| [authentication-service](docs/services/authentication-service.md) | Java 21 | 8081 | [docs/services/authentication-service.md](docs/services/authentication-service.md) |
+| [chat-service](docs/services/chat-service.md) | Java 21 | 8082 | [docs/services/chat-service.md](docs/services/chat-service.md) |
+| [chatbot-service](docs/services/chatbot-service.md) | Python | 8000 / 50051 | [docs/services/chatbot-service.md](docs/services/chatbot-service.md) |
+| [document-service](docs/services/document-service.md) | Java 21 | 8083 | [docs/services/document-service.md](docs/services/document-service.md) |
+| [etl-service](docs/services/etl-service) | Python | — | [docs/services/etl-service.md](docs/services/etl-service.md) |
+| [evaluation-service](docs/services/evaluation-service) | Java 17 | 8084 | [docs/services/evaluation-service.md](docs/services/evaluation-service.md) |
+| [kong-gateway](docs/services/kong-gateway) | Kong 3.7 | 8000 | [docs/services/kong-gateway.md](docs/services/kong-gateway.md) |
+| [ollama-service](docs/services/ollama-service) | Shell/Docker | 11434 | [docs/services/ollama-service.md](docs/services/ollama-service.md) |
+| [shared-security](docs/services/shared-security) | Java (lib) | — | [docs/services/shared-security.md](docs/services/shared-security.md) |
+| [user-interface](docs/services/user-interface) | Vue 3 / TS | 3000 | [docs/services/user-interface.md](docs/services/user-interface.md) |
 
 ## Service Documentation
 
